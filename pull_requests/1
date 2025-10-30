@@ -1,0 +1,9 @@
+This PR adds a Socket.IO realtime backend that authenticates sockets and API calls via JWT (token must include companyId). It persists survey responses to Postgres and emits response:created to per-company and per-survey rooms. Also includes Dockerfile + docker-compose for quick local dev, sql/schema.sql with a trigger to NOTIFY on new responses, a client hook (useRealtimeResponses), and an integration test (Jest + supertest + socket.io-client) that posts a response and asserts a connected socket receives the event.
+
+Run & test notes:
+- Copy .env.example -> .env and set DATABASE_URL, JWT_SECRET, WS_CORS_ORIGIN.
+- docker-compose up --build and apply schema: docker-compose exec postgres psql -U postgres -d fixdb -f /app/sql/schema.sql
+- Generate a JWT including companyId and use it for socket auth and POST /api/responses.
+- Run tests locally with: cd server && npm install && npm run test (requires Postgres running).
+
+Security & next steps: pick a strong JWT secret, enable TLS/wss, add rate limiting and validation, and enable Redis adapter for multi-instance Socket.IO.
