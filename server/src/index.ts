@@ -107,6 +107,10 @@ startPgNotifyListener((channel, payload) => {
 });
 
 const PORT = Number(process.env.PORT || 4000);
-server.listen(PORT, () => {
-  console.log(`Realtime Socket.IO server listening on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.log(`Realtime Socket.IO server listening on port ${PORT}`);
+  });
+}
+
+export { app, io, server };
